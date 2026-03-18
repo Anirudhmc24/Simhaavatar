@@ -1,36 +1,127 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🦁 Simhaavatar — Premium Men's Temple Jewellery Rental
 
-## Getting Started
+> Royal Heritage meets High-Tech Minimalism  
+> Next.js 14 · React · GSAP · Zustand · Mysore
 
-First, run the development server:
+---
+
+## Quick Start
+
+### 1. Install dependencies
+
+```bash
+npm install
+```
+
+### 2. Run locally
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Structure
 
-## Learn More
+```
+simhaavatar/
+├── app/
+│   ├── page.js              # Homepage — hero + bento grid
+│   ├── contact/page.js      # Contact us + inquiry form
+│   ├── faq/page.js          # FAQ accordion
+│   ├── about/page.js        # Brand story + team + timeline
+│   ├── not-found.js         # 404 page
+│   ├── layout.js            # Root layout + metadata
+│   ├── globals.css          # Design tokens + reset
+│   ├── components/
+│   │   ├── Header.js        # Sticky nav with active link highlighting
+│   │   ├── Footer.js        # Site footer
+│   │   ├── JewelCanvas.js   # Animated 2D jewellery renderer (5 models)
+│   │   ├── BentoCard.js     # Look card for the grid
+│   │   ├── LookModal.js     # Full-screen look detail modal
+│   │   └── RentalForm.js    # Booking form → WhatsApp
+│   └── lib/
+│       ├── tokens.js        # All data: looks, hours, FAQ, team, colors
+│       └── store.js         # Zustand state management
+├── next.config.js
+├── jsconfig.json
+└── package.json
+```
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Pages
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Route | Page |
+|-------|------|
+| `/` | Portfolio homepage — hero, bento grid, 5 looks |
+| `/contact` | Contact form, studio hours, map, social links |
+| `/faq` | Accordion FAQ — 13 questions across 3 categories |
+| `/about` | Brand story, values, timeline, team |
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Customising Content
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+All content lives in **`app/lib/tokens.js`** — edit this file to update:
+
+- Look names, descriptions, prices → `LOOKS` array
+- Studio hours → `STUDIO_HOURS` array
+- FAQ questions & answers → `FAQ_DATA` array
+- Team members → `TEAM` array
+- WhatsApp number → `buildWhatsAppLink()` function (replace `919999999999`)
+
+---
+
+## Wiring the Contact Form
+
+The form currently opens WhatsApp with a pre-filled message.  
+To also capture submissions by email, add Formspree:
+
+1. Go to [formspree.io](https://formspree.io) → create a free form
+2. Copy your form ID
+3. In `app/contact/page.js`, find `handleSubmit()` and uncomment the Formspree fetch block
+4. Replace `YOUR_FORM_ID` with your actual ID
+
+---
+
+## Deploy to Vercel
+
+```bash
+npx vercel
+```
+
+That's it. Vercel auto-detects Next.js and deploys in ~2 minutes.
+
+---
+
+## Design Tokens
+
+| Token | Value | Use |
+|-------|-------|-----|
+| `--gold` | `#D4AF37` | Mysore Gold — primary accent |
+| `--gold-light` | `#F5E27A` | Shine gold — highlights |
+| `--gold-dark` | `#8B6914` | Antique gold — muted |
+| `--obsidian` | `#0B0B0B` | Primary dark background |
+| `--void` | `#050505` | Deepest black |
+| `--ivory` | `#F8F3E8` | Light text / Samskriti bg |
+
+Fonts: `Cormorant Garamond` (display) · `Montserrat` (body) · `JetBrains Mono` (labels)
+
+---
+
+## The 5 Looks
+
+| # | Look | Piece | Price |
+|---|------|-------|-------|
+| 01 | Maharaja | Ganda Berunda Kanthi Necklace | ₹4,800/day |
+| 02 | Yoddha | Narasimha Baju Band | ₹3,200/day |
+| 03 | Dharma | Rudraksha Lingam Kanthi | ₹2,100/day |
+| 04 | Samskriti | Kasina Coin Ring / Thick Kada | ₹1,400/day |
+| 05 | Kalakaar | Karna Kundala & Headgear | ₹2,800/day |
+
+---
+
+*Simhaavatar · Mysore, Karnataka · © 2025*

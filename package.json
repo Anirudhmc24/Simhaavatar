@@ -6,16 +6,20 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "next lint"
   },
   "dependencies": {
-    "next": "16.1.7",
-    "react": "19.2.3",
-    "react-dom": "19.2.3"
+    "@react-three/drei": "^9.105.6",
+    "@react-three/fiber": "^8.16.8",
+    "gsap": "^3.12.5",
+    "next": "14.2.3",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "three": "^0.165.0",
+    "zustand": "^4.5.2"
   },
   "devDependencies": {
-    "babel-plugin-react-compiler": "1.0.0",
-    "eslint": "^9",
-    "eslint-config-next": "16.1.7"
+    "eslint": "^8",
+    "eslint-config-next": "14.2.3"
   }
 }
