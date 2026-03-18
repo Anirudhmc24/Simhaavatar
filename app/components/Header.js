@@ -1,103 +1,115 @@
 'use client';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
-  const pathname = usePathname();
+  const [scrollProgress, setScrollProgress] = useState(0);
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60);
+    const onScroll = () => {
+      const winScroll = document.documentElement.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolledTotal = (winScroll / height) * 100;
+      
+      setScrollProgress(scrolledTotal);
+      setScrolled(winScroll > 60);
+    };
+    
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const navLinks = [
-    { href: '/#bento', label: 'Looks' },
-    { href: '/contact', label: 'Contact' },
-    { href: '/about', label: 'About' },
-    { href: '/faq', label: 'FAQ' },
+    { id: 'home', label: 'Home' },
+    { id: 'collection', label: 'Looks' },
+    { id: 'about', label: 'About' },
+    { id: 'faq', label: 'FAQ' },
+    { id: 'contact', label: 'Contact' },
   ];
 
+  const scrollToSection = (id) => {
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
-    <header style={{
-      position: 'fixed',
-      top: 0, left: 0, right: 0,
-      zIndex: 500,
-      height: 64,
-      padding: '0 40px',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      background: scrolled ? 'rgba(5,4,2,0.94)' : 'transparent',
-      backdropFilter: scrolled ? 'blur(20px)' : 'none',
-      borderBottom: scrolled ? '1px solid rgba(212,175,55,0.12)' : 'none',
-      transition: 'all 0.4s ease',
-    }}>
-      {/* Brand */}
-      <Link href="/" style={{ display: 'flex', alignItems: 'center', gap: 10, textDecoration: 'none' }}>
+    <>
+      <style jsx>{`
+        .nav-link { 
+          position: relative; 
+          background: none; 
+          border: none; 
+          cursor: pointer; 
+          color: rgba(255, 255, 255, 0.4); 
+          transition: color 0.3s ease; 
+          font-family: var(--font-mono);
+          font-size: 9px;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          padding: 8px 0;
+        }
+        .nav-link:hover { color: #D4AF37 !important; }
+        .nav-line { 
+          position: absolute; 
+          bottom: 0; 
+          left: 50%; 
+          width: 0; 
+          height: 1px; 
+          background: #D4AF37; 
+          opacity: 0; 
+          transform: translateX(-50%); 
+          transition: all 0.3s ease; 
+        }
+        .nav-link:hover .nav-line { width: 100%; opacity: 1; }
+      `}</style>
+
+      <header style={{
+        position: 'fixed', top: 0, left: 0, right: 0, zIndex: 500, height: 72, padding: '0 60px',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+        background: scrolled ? 'rgba(5,4,2,0.96)' : 'transparent',
+        backdropFilter: scrolled ? 'blur(20px)' : 'none',
+        borderBottom: scrolled ? '1px solid rgba(212,175,55,0.1)' : 'none',
+        transition: 'all 0.5s ease',
+      }}>
+        {/* ── SCROLL PROGRESS BAR ── */}
         <div style={{
-          width: 32, height: 32, borderRadius: '50%',
-          border: '1.5px solid #D4AF37',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: 14, color: '#D4AF37',
-        }}>𒀭</div>
-        <div>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: 17, letterSpacing: 3, color: '#F8F3E8', lineHeight: 1 }}>
-            SIMHAAVATAR
-          </div>
-          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 7, letterSpacing: 5, color: '#D4AF37', opacity: 0.55 }}>
-            MYSORE · EST. 2019
-          </div>
+          position: 'absolute', bottom: 0, left: 0, 
+          height: '2px', background: '#D4AF37', 
+          width: `${scrollProgress}%`, transition: 'width 0.1s ease-out'
+        }} />
+
+        <div onClick={() => scrollToSection('home')} style={{ cursor: 'pointer' }}>
+          <div style={{ fontFamily: 'var(--font-display)', fontSize: 20, letterSpacing: 6, color: '#F8F3E8', fontWeight: 700 }}>SIMHAAVATAR</div>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: 8, letterSpacing: 4, color: '#D4AF37', opacity: 0.7, marginTop: 4 }}>MYSORE · EST. 2019</div>
         </div>
-      </Link>
 
-      {/* Nav */}
-      <nav style={{ display: 'flex', gap: 28 }}>
-        {navLinks.map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            style={{
-              fontFamily: 'var(--font-mono)',
-              fontSize: 9,
-              letterSpacing: 3,
-              textTransform: 'uppercase',
-              textDecoration: 'none',
-              color: pathname === link.href ? '#D4AF37' : 'rgba(255,255,255,0.5)',
-              transition: 'color 0.2s',
-              borderBottom: pathname === link.href ? '1px solid #D4AF37' : '1px solid transparent',
-              paddingBottom: 2,
-            }}
-            onMouseEnter={(e) => e.target.style.color = '#D4AF37'}
-            onMouseLeave={(e) => e.target.style.color = pathname === link.href ? '#D4AF37' : 'rgba(255,255,255,0.5)'}
-          >
-            {link.label}
-          </Link>
-        ))}
-      </nav>
+        <nav style={{ display: 'flex', gap: 32 }}>
+          {navLinks.map((link) => (
+            <button 
+              key={link.id} 
+              onClick={() => scrollToSection(link.id)} 
+              className="nav-link"
+            >
+              {link.label}
+              <div className="nav-line" />
+            </button>
+          ))}
+        </nav>
 
-      {/* CTA */}
-      <Link
-        href="/contact"
-        style={{
-          padding: '8px 20px',
-          border: '1px solid rgba(212,175,55,0.5)',
-          borderRadius: 40,
-          fontFamily: 'var(--font-mono)',
-          fontSize: 9,
-          letterSpacing: 3,
-          color: '#D4AF37',
-          textDecoration: 'none',
-          textTransform: 'uppercase',
-          transition: 'all 0.25s',
-        }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#D4AF37'; e.currentTarget.style.color = '#0B0B0B'; }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#D4AF37'; }}
-      >
-        Book a Look
-      </Link>
-    </header>
+        <button 
+          onClick={() => scrollToSection('contact')}
+          style={{ 
+            padding: '12px 28px', border: '1px solid rgba(212,175,55,0.4)', borderRadius: 2, 
+            fontFamily: 'var(--font-mono)', fontSize: 9, letterSpacing: 3, color: '#D4AF37', 
+            background: 'transparent', cursor: 'pointer', textTransform: 'uppercase' 
+          }}
+        >
+          Book a Look
+        </button>
+      </header>
+    </>
   );
 }

@@ -1,15 +1,15 @@
 import { create } from 'zustand';
 
-const useStore = create((set) => ({
-  // Active look module
+export const useStore = create((set) => ({
+  // Active look module (used for scroll-based models)
   activeLook: null,
   setActiveLook: (look) => set({ activeLook: look }),
 
-  // Modal open state
+  // Modal & UI states
   modalOpen: false,
   setModalOpen: (open) => set({ modalOpen: open }),
 
-  // Customizer — mix and match selected pieces
+  // Customizer (Mix and Match)
   customizerOpen: false,
   setCustomizerOpen: (open) => set({ customizerOpen: open }),
 
@@ -27,11 +27,7 @@ const useStore = create((set) => ({
   clearPieces: () =>
     set({
       selectedPieces: {
-        necklace: null,
-        armlet:   null,
-        ring:     null,
-        earchain: null,
-        headgear: null,
+        necklace: null, armlet: null, ring: null, earchain: null, headgear: null,
       },
     }),
 

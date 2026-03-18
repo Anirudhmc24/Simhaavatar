@@ -50,7 +50,7 @@ export default function Footer() {
       </nav>
 
       <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13, color: 'rgba(255,255,255,0.2)', fontStyle: 'italic' }}>
-        Royal Heritage meets High-Tech Minimalism
+        Royal Heritage Handcrafted Jewels
       </div>
     </footer>
   );

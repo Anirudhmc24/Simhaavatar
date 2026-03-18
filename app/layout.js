@@ -1,4 +1,5 @@
 import './globals.css'
+import Watermark from './components/watermark'
 
 export const metadata = {
   title:       "Simhaavatar — Premium Men's Temple Jewellery Rental, Mysore",
@@ -17,7 +18,13 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
       </head>
-      <body>{children}</body>
+      <body className="bg-black text-white">
+        {/* The watermark is initialized here to be present on all pages */}
+        <Watermark />
+        <main className="relative z-10">
+          {children}
+        </main>
+      </body>
     </html>
   )
 }

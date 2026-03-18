@@ -1,158 +1,228 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Header from './components/Header'
-import BentoCard from './components/BentoCard'
-import LookModal from './components/LookModal'
 import JewelCanvas from './components/JewelCanvas'
+import Watermark from './components/watermark' 
 import RentalForm from './components/RentalForm'
-import { COLORS, FONTS, LOOKS } from '../lib/tokens'
-import { useStore } from '../lib/store'
+import Footer from './components/Footer'
+import { COLORS, FONTS, LOOKS, FAQ_DATA, TEAM } from './lib/tokens'
 
-const BENTO_LAYOUT = [
-  { id:'maharaja', colSpan:2, rowSpan:2 },
-  { id:'yoddha',   colSpan:1, rowSpan:2 },
-  { id:'dharma',   colSpan:1, rowSpan:1 },
-  { id:'samskriti',colSpan:1, rowSpan:1 },
-  { id:'kalakaar', colSpan:2, rowSpan:1 },
-]
-
-const TAGLINES = [
-  'ಸಿಂಹಾವತಾರ — THE LION AVATAR',
-  "Premium Men's Temple Jewellery",
-  'Mysore, Karnataka · Est. 2019',
-  'Rent The Jewellery of Kings',
-]
-
-const FLOW_STEPS = [
-  { num:'01', label:'Land',      desc:'Cinematic hero'  },
-  { num:'02', label:'Discover',  desc:'Bento look grid' },
-  { num:'03', label:'Interact',  desc:'3D + details'    },
-  { num:'04', label:'Customize', desc:'Mix & match'     },
-  { num:'05', label:'Inquire',   desc:'Book your look'  },
-]
-
-export default function HomePage() {
-  const { setActiveLook } = useStore()
-  const [scrolled, setScrolled]     = useState(false)
-  const [taglineIdx, setTaglineIdx] = useState(0)
+export default function InfiniteScrollPage() {
+  const [activeLook, setActiveLook] = useState(LOOKS[0])
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [showBackToTop, setShowBackToTop] = useState(false)
+  const [openFaq, setOpenFaq] = useState(null)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 60)
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
+    setMounted(true)
+    const handleScroll = () => {
+      const scrollPos = window.scrollY
+      const vh = window.innerHeight
+      setShowBackToTop(scrollPos > vh * 0.5)
 
-  useEffect(() => {
-    const t = setInterval(() => setTaglineIdx(i => (i + 1) % TAGLINES.length), 3000)
-    return () => clearInterval(t)
-  }, [])
+      const collectionIndex = Math.floor((scrollPos - vh + vh/2) / vh)
+      if (LOOKS[collectionIndex]) {
+        setActiveLook(LOOKS[collectionIndex])
+      }
+    }
+    window.addEventListener('scroll', handleScroll, { passive: true })
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [activeLook])
+
+  const headingStyle = {
+    fontFamily: 'var(--font-display)',
+    fontWeight: 900,
+    textTransform: 'uppercase',
+    color: COLORS.ivory,
+    lineHeight: 0.85,
+    letterSpacing: '-0.02em'
+  };
+
+  const monoLabelStyle = {
+    fontFamily: 'var(--font-mono)',
+    fontSize: 10,
+    color: COLORS.mysoreGold,
+    letterSpacing: 6,
+    textTransform: 'uppercase',
+    opacity: 0.8
+  };
 
   return (
-    <>
-      <Header scrolled={scrolled} />
+    <div style={{ background: COLORS.voidBlack, color: COLORS.ivory, overflowX: 'hidden', position: 'relative' }}>
+      
+      {/* ── CSS ANIMATIONS ── */}
+      <style jsx global>{`
+        @keyframes floatDust {
+          0% { transform: translateY(0) translateX(0); opacity: 0; }
+          20% { opacity: 0.3; }
+          80% { opacity: 0.3; }
+          100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+        }
+        .gold-dust {
+          position: fixed;
+          background: #D4AF37;
+          border-radius: 50%;
+          pointer-events: none;
+          z-index: 1; 
+          filter: blur(1px);
+        }
+      `}</style>
 
-      {/* HERO */}
-      <section style={{
-        position:'relative', height:'100vh',
-        display:'flex', flexDirection:'column',
-        alignItems:'center', justifyContent:'center',
-        overflow:'hidden',
-        background:`radial-gradient(ellipse at 40% 50%, ${COLORS.mysoreGold}09 0%, transparent 65%), ${COLORS.voidBlack}`,
-      }}>
-        <div style={{ position:'absolute', inset:0, opacity:.35 }}>
-          <JewelCanvas modelType="kanthi" accent={COLORS.mysoreGold} />
-        </div>
-        <div style={{
-          position:'absolute', inset:0, pointerEvents:'none',
-          backgroundImage:`linear-gradient(${COLORS.mysoreGold}06 1px,transparent 1px),linear-gradient(90deg,${COLORS.mysoreGold}06 1px,transparent 1px)`,
-          backgroundSize:'72px 72px',
-        }} />
-
-        <div style={{ position:'relative', textAlign:'center', zIndex:1, padding:'0 40px', maxWidth:900 }}>
-          <p style={{
-            fontFamily:FONTS.mono, fontSize:9, letterSpacing:8,
-            color:COLORS.mysoreGold, opacity:.65, textTransform:'uppercase',
-            marginBottom:24, animation:'fadeIn 1s ease .2s both',
-          }}>
-            {TAGLINES[taglineIdx]}
-          </p>
-          <h1 style={{ fontFamily:FONTS.display, fontSize:'clamp(48px,8vw,108px)', fontWeight:600, color:COLORS.ivory, lineHeight:1, margin:'0 0 4px', letterSpacing:2, animation:'fadeInUp .9s ease .4s both' }}>
-            Royal Heritage
-          </h1>
-          <h1 style={{ fontFamily:FONTS.display, fontSize:'clamp(24px,4vw,52px)', fontWeight:300, fontStyle:'italic', color:`${COLORS.mysoreGold}88`, lineHeight:1, margin:'0 0 4px', letterSpacing:12, animation:'fadeInUp .9s ease .55s both' }}>
-            meets
-          </h1>
-          <h1 style={{ fontFamily:FONTS.display, fontSize:'clamp(36px,6vw,88px)', fontWeight:600, color:COLORS.ivory, lineHeight:1, letterSpacing:2, animation:'fadeInUp .9s ease .7s both' }}>
-            High-Tech Minimalism
-          </h1>
-
-          <div style={{ display:'flex', justifyContent:'center', gap:16, marginTop:48, animation:'fadeIn 1s ease 1.2s both' }}>
-            <button
-              onClick={() => document.getElementById('bento')?.scrollIntoView({ behavior:'smooth' })}
-              style={{ padding:'14px 36px', background:COLORS.mysoreGold, border:'none', borderRadius:4, fontFamily:FONTS.mono, fontSize:10, letterSpacing:5, color:COLORS.voidBlack, textTransform:'uppercase', cursor:'pointer' }}
-            >
-              Explore The Looks
-            </button>
-            <a href="/about" style={{ padding:'14px 36px', background:'transparent', border:`1px solid ${COLORS.mysoreGold}55`, borderRadius:4, fontFamily:FONTS.mono, fontSize:10, letterSpacing:5, color:COLORS.mysoreGold, textTransform:'uppercase', textDecoration:'none' }}>
-              Our Heritage
-            </a>
-          </div>
-        </div>
-
-        <div style={{ position:'absolute', bottom:40, left:'50%', transform:'translateX(-50%)', display:'flex', flexDirection:'column', alignItems:'center', gap:8, animation:'pulse 2.5s ease infinite', opacity:.4 }}>
-          <div style={{ width:1, height:56, background:`linear-gradient(${COLORS.mysoreGold}, transparent)` }} />
-          <span style={{ fontFamily:FONTS.mono, fontSize:8, letterSpacing:4, color:COLORS.mysoreGold }}>SCROLL</span>
-        </div>
-      </section>
-
-      {/* UX FLOW */}
-      <section style={{ padding:'60px 40px', display:'flex', alignItems:'center', justifyContent:'center', gap:0, borderBottom:`1px solid ${COLORS.mysoreGold}08` }}>
-        {FLOW_STEPS.map((step, i) => (
-          <div key={step.num} style={{ display:'contents' }}>
-            <div style={{ flex:1, textAlign:'center' }}>
-              <div style={{ width:44, height:44, borderRadius:'50%', border:`1px solid ${COLORS.mysoreGold}35`, background:`${COLORS.mysoreGold}06`, display:'flex', alignItems:'center', justifyContent:'center', fontFamily:FONTS.mono, fontSize:9, color:COLORS.mysoreGold, margin:'0 auto 10px' }}>{step.num}</div>
-              <p style={{ fontFamily:FONTS.display, fontSize:14, color:COLORS.ivory, margin:'0 0 3px' }}>{step.label}</p>
-              <p style={{ fontFamily:FONTS.sans, fontSize:10, color:'rgba(255,255,255,.28)', margin:0 }}>{step.desc}</p>
-            </div>
-            {i < FLOW_STEPS.length - 1 && (
-              <div style={{ flex:'0 0 24px', height:1, background:`linear-gradient(90deg,${COLORS.mysoreGold}22,${COLORS.mysoreGold}66,${COLORS.mysoreGold}22)`, marginTop:-20 }} />
-            )}
-          </div>
+      {/* Gold Dust Particles */}
+      <div style={{ position: 'fixed', inset: 0, zIndex: 1, pointerEvents: 'none' }}>
+        {[...Array(25)].map((_, i) => (
+          <div key={i} className="gold-dust" style={{
+            width: (Math.random() * 2 + 1) + 'px',
+            height: (Math.random() * 2 + 1) + 'px',
+            left: (Math.random() * 100) + 'vw',
+            bottom: '-5vh',
+            animation: `floatDust ${12 + Math.random() * 18}s linear infinite`,
+            animationDelay: (Math.random() * 10) + 's',
+          }} />
         ))}
-      </section>
+      </div>
 
-      {/* BENTO */}
-      <section id="bento" style={{ padding:'72px 40px 100px' }}>
-        <p style={{ fontFamily:FONTS.mono, fontSize:9, letterSpacing:7, color:COLORS.mysoreGold, opacity:.5, textTransform:'uppercase', textAlign:'center', marginBottom:16 }}>The Five Avatars</p>
-        <h2 style={{ fontFamily:FONTS.display, fontSize:'clamp(28px,5vw,60px)', color:COLORS.ivory, fontWeight:500, textAlign:'center', marginBottom:56 }}>Choose Your Look</h2>
+      <Header />
+      <Watermark isPersistent={true} />
 
-        <div style={{ display:'grid', gridTemplateColumns:'repeat(3, 1fr)', gridTemplateRows:'340px 220px', gap:14, maxWidth:1160, margin:'0 auto' }}>
-          {LOOKS.map((look) => {
-            const layout = BENTO_LAYOUT.find(b => b.id === look.id)
-            return (
-              <div key={look.id} style={{ gridColumn:`span ${layout.colSpan}`, gridRow:`span ${layout.rowSpan}` }}>
-                <BentoCard look={look} onSelect={setActiveLook} />
+      {/* ── PERSISTENT BACK TO TOP (Bottom Left) ── */}
+      <button 
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        style={{
+          position: 'fixed', bottom: '40px', left: '40px', zIndex: 100,
+          background: 'rgba(212, 175, 55, 0.05)', backdropFilter: 'blur(10px)',
+          border: `1px solid ${COLORS.mysoreGold}33`, color: COLORS.mysoreGold,
+          fontFamily: 'var(--font-mono)', fontSize: '10px', padding: '12px 24px',
+          borderRadius: '2px', letterSpacing: '4px', cursor: 'pointer',
+          opacity: showBackToTop ? 1 : 0,
+          transform: showBackToTop ? 'translateY(0)' : 'translateY(20px)',
+          transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
+          pointerEvents: showBackToTop ? 'auto' : 'none'
+        }}
+      >
+        TOP ↑
+      </button>
+
+      {/* ── LAYER 3: FIXED 3D JEWELRY (RIGHT ALIGNED) ── */}
+      <div style={{ 
+        position: 'fixed', top: 0, right: 0, width: '55vw', height: '100vh', 
+        zIndex: 0, pointerEvents: 'none',
+        opacity: activeLook ? 1 : 0.8, transition: 'opacity 1.5s ease-in-out',
+        display: 'flex', justifyContent: 'center', alignItems: 'center'
+      }}>
+        {mounted && (
+          <JewelCanvas 
+            accent={activeLook ? activeLook.accent : COLORS.mysoreGold} 
+            style={{ width: '100%', height: '100%' }}
+          />
+        )}
+      </div>
+
+      {/* ── LAYER 10: CONTENT ── */}
+      <div style={{ position: 'relative', zIndex: 10 }}>
+        
+        {/* HERO */}
+        <section id="home" style={{ height: '100vh', display: 'flex', alignItems: 'center', padding: '0 8%' }}>
+          <div style={{ maxWidth: 800 }}>
+            <p style={{ ...monoLabelStyle, marginBottom: 24 }}>Mysore · Est. 2019</p>
+            <h1 style={{ ...headingStyle, fontSize: 'clamp(52px, 8.5vw, 115px)', marginBottom: 48 }}>
+              Royal <br /> Heritage <br /> 
+              <span style={{ color: COLORS.mysoreGold, fontStyle: 'italic', fontWeight: 300, letterSpacing: 10 }}>Handcrafted</span> <br /> 
+              Jewellery For Men
+            </h1>
+            <button 
+              onClick={() => document.getElementById('collection').scrollIntoView({behavior:'smooth'})} 
+              style={{ padding: '22px 56px', background: COLORS.mysoreGold, color: COLORS.voidBlack, fontFamily: 'var(--font-mono)', fontWeight: 900, fontSize: 12, letterSpacing: 5, border: 'none', borderRadius: 2, cursor: 'pointer' }}
+            >
+              EXPLORE COLLECTION
+            </button>
+          </div>
+        </section>
+
+        {/* COLLECTION */}
+        <div id="collection">
+          {LOOKS.map((look, i) => (
+            <section key={look.id} style={{ height: '100vh', display: 'flex', alignItems: 'center', padding: '0 8%', background: 'rgba(5,5,5,0.05)' }}>
+              <div style={{ maxWidth: 650 }}>
+                <span style={{ ...monoLabelStyle, color: look.accent }}>{look.kannada} / 0{i + 1}</span>
+                <h2 style={{ ...headingStyle, fontSize: 'clamp(44px, 7vw, 92px)', margin: '16px 0' }}>{look.title}</h2>
+                <p style={{ fontFamily: 'var(--font-serif)', fontSize: 20, color: 'rgba(255,255,255,0.5)', marginBottom: 48, fontStyle: 'italic', lineHeight: 1.8 }}>{look.description}</p>
+                <button 
+                  onClick={() => setIsFormOpen(true)} 
+                  style={{ padding: '20px 60px', background: look.accent, color: COLORS.voidBlack, border: 'none', borderRadius: 2, fontFamily: 'var(--font-mono)', fontWeight: '900', letterSpacing: 4, cursor: 'pointer' }}
+                >
+                  ENQUIRE NOW
+                </button>
               </div>
-            )
-          })}
-        </div>
-      </section>
-
-      {/* FOOTER */}
-      <footer style={{ padding:'44px 40px', borderTop:`1px solid ${COLORS.mysoreGold}12`, display:'flex', justifyContent:'space-between', alignItems:'flex-end', background:COLORS.voidBlack, flexWrap:'wrap', gap:24 }}>
-        <div>
-          <p style={{ fontFamily:FONTS.display, fontSize:22, color:COLORS.mysoreGold, letterSpacing:3 }}>SIMHAAVATAR</p>
-          <p style={{ fontFamily:FONTS.mono, fontSize:8, color:'rgba(255,255,255,.2)', letterSpacing:5, marginTop:4 }}>MYSORE, KARNATAKA · © 2025 · ALL RIGHTS RESERVED</p>
-        </div>
-        <div style={{ display:'flex', gap:28 }}>
-          {['about','faq','contact'].map(link => (
-            <a key={link} href={`/${link}`} style={{ fontFamily:FONTS.mono, fontSize:8, letterSpacing:3, color:'rgba(255,255,255,.22)', textTransform:'uppercase', textDecoration:'none' }}>{link}</a>
+            </section>
           ))}
         </div>
-      </footer>
 
-      <LookModal />
-      <RentalForm />
-    </>
+        {/* ABOUT */}
+        <section id="about" style={{ padding: '160px 8%', background: 'rgba(5,5,5,0.95)', backdropFilter: 'blur(10px)' }}>
+          <div style={{ maxWidth: 1000, margin: '0 auto', textAlign: 'center' }}>
+            <p style={{ ...monoLabelStyle, marginBottom: 20 }}>Our Story</p>
+            <h2 style={{ ...headingStyle, fontSize: 'clamp(40px, 5vw, 72px)', marginBottom: 60 }}>The House of Simhaavatar</h2>
+            <p style={{ fontFamily: 'var(--font-serif)', fontSize: 22, lineHeight: 1.8, fontStyle: 'italic', color: 'rgba(255,255,255,0.8)', marginBottom: 100 }}>
+              Simhaavatar was founded on a single belief: that every man deserves to wear the jewellery of kings. 
+              Rooted in Mysore’s heritage, we make temple gold accessible.
+            </p>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, marginBottom: 140 }}>
+              {['Authentic Craft', 'Rental First', 'Styled for Men'].map((title) => (
+                <div key={title} style={{ padding: '60px 30px', border: '1px solid rgba(212,175,55,0.12)', background: 'rgba(212,175,55,0.02)', borderRadius: 2 }}>
+                  <h3 style={{ color: COLORS.mysoreGold, marginBottom: 15, fontFamily: 'var(--font-display)', fontSize: 22, letterSpacing: 1 }}>{title}</h3>
+                </div>
+              ))}
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 40 }}>
+              {TEAM.map((member) => (
+                <div key={member.name}>
+                  <div style={{ width: 64, height: 64, border: `1px solid ${COLORS.mysoreGold}`, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px', color: COLORS.mysoreGold, fontFamily: 'var(--font-display)', fontSize: 24 }}>{member.initial}</div>
+                  <h4 style={{ fontFamily: 'var(--font-display)', fontSize: 20, textTransform: 'uppercase' }}>{member.name}</h4>
+                  <p style={{ ...monoLabelStyle, fontSize: 8, marginTop: 4 }}>{member.role}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ */}
+        <section id="faq" style={{ padding: '120px 8%', background: '#080808' }}>
+          <div style={{ maxWidth: 900, margin: '0 auto' }}>
+            <p style={{ ...monoLabelStyle, textAlign: 'center', marginBottom: 20 }}>Concierge</p>
+            <h2 style={{ ...headingStyle, fontSize: 48, textAlign: 'center', marginBottom: 80 }}>Common Questions</h2>
+            {FAQ_DATA.map((category, catIdx) => (
+              <div key={catIdx} style={{ marginBottom: 60 }}>
+                <p style={{ ...monoLabelStyle, fontSize: 10, marginBottom: 32, opacity: 0.5 }}>{category.category}</p>
+                {category.items.map((item, i) => (
+                  <div key={i} style={{ borderBottom: '1px solid rgba(212,175,55,0.1)', overflow: 'hidden' }}>
+                    <button 
+                      onClick={() => setOpenFaq(openFaq === `${catIdx}-${i}` ? null : `${catIdx}-${i}`)}
+                      style={{ width: '100%', padding: '30px 0', background: 'none', border: 'none', textAlign: 'left', cursor: 'pointer', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}
+                    >
+                      <span style={{ fontFamily: 'var(--font-display)', fontSize: 20, color: openFaq === `${catIdx}-${i}` ? COLORS.mysoreGold : COLORS.ivory }}>{item.q}</span>
+                      <span style={{ color: COLORS.mysoreGold }}>{openFaq === `${catIdx}-${i}` ? '−' : '+'}</span>
+                    </button>
+                    {openFaq === `${catIdx}-${i}` && (
+                      <p style={{ paddingBottom: 30, fontFamily: 'var(--font-serif)', color: 'rgba(255,255,255,0.5)', lineHeight: 1.8, fontSize: 17 }}>{item.a}</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* CONTACT */}
+        <section id="contact" style={{ padding: '180px 8%', background: COLORS.voidBlack, textAlign: 'center' }}>
+          <h2 style={{ ...headingStyle, fontSize: 'clamp(44px, 7vw, 92px)', marginBottom: 24 }}>Legacy Defined.</h2>
+          <button onClick={() => window.open('https://wa.me/919632838185')} style={{ padding: '22px 64px', background: COLORS.mysoreGold, color: COLORS.voidBlack, border: 'none', borderRadius: 2, fontFamily: 'var(--font-mono)', fontWeight: '900', letterSpacing: 5, cursor: 'pointer' }}>WHATSAPP CONCIERGE</button>
+        </section>
+
+      </div>
+      <Footer />
+      {isFormOpen && <RentalForm look={activeLook} onClose={() => setIsFormOpen(false)} />}
+    </div>
   )
 }
