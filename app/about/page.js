@@ -55,7 +55,7 @@ export default function AboutPage() {
               <strong style={{ color: '#F8F3E8', fontStyle: 'normal', fontSize: 24, display: 'block', marginBottom: 20 }}>
                 Simhaavatar was founded on a single belief: that every man deserves to wear the jewellery of kings — not just own it. 
               </strong>
-              Mysore's Vijayanagara heritage is the richest tradition of masculine gold craft in India.
+              {"Mysore&apos;s Vijayanagara heritage is the richest tradition of masculine gold craft in India."}
             </p>
 
             <p style={{ fontFamily: 'var(--font-serif)', fontSize: 18, lineHeight: 2, color: 'rgba(255,255,255,0.5)', fontStyle: 'italic', marginBottom: 32, maxWidth: 850, margin: '0 auto 32px' }}>

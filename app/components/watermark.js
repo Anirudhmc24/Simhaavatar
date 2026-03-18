@@ -42,7 +42,7 @@ export default function Watermark({ isPersistent = false }) {
           ease: "easeInOut"
         }}
       >
-        <img 
+        <Image
           src="/assets/lion-watermark.png" 
           alt="Simhaavatar Royal Seal" 
           style={{ 

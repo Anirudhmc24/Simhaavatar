@@ -1,5 +1,16 @@
 import './globals.css'
 import Watermark from './components/watermark'
+import { Playfair_Display, Inter } from 'next/font/google'
+
+const displayFont = Playfair_Display({ subsets: ['latin'], variable: '--font-display' })
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en" className={`${displayFont.variable}`}>
+      <body>{children}</body>
+    </html>
+  )
+}
 
 export const metadata = {
   title:       "Simhaavatar — Premium Men's Temple Jewellery Rental, Mysore",
