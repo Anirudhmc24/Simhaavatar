@@ -152,7 +152,7 @@ export default function InfiniteScrollPage() {
         {/* HERO */}
         <section id="home" className="section-padding" style={{ height: '100vh', display: 'flex', alignItems: 'center', padding: '0 8%' }}>
           <div style={{ maxWidth: 800 }}>
-            <p style={{ ...monoLabelStyle, marginBottom: 24 }}>Mysore · Est. 2019</p>
+            <p style={{ ...monoLabelStyle, marginBottom: 24 }}>Mysore · Est. 2025</p>
             <h1 className="hero-title" style={{ ...headingStyle, fontSize: 'clamp(52px, 8.5vw, 115px)', marginBottom: 48 }}>
               Royal <br /> Heritage <br /> 
               <span style={{ color: COLORS.mysoreGold, fontStyle: 'italic', fontWeight: 300, letterSpacing: 10 }}>Handcrafted</span> <br /> 
