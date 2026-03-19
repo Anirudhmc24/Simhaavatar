@@ -39,17 +39,25 @@ export default function Header() {
     <>
       <style jsx>{`
         header { 
-          position: fixed; top: 0; left: 0; right: 0; z-index: 500; 
+          position: fixed; top: 0; left: 0; right: 0; zIndex: 500; 
           display: flex; align-items: center; justify-content: space-between;
           transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        .brand-text {
+          font-family: var(--font-display), serif;
+          font-weight: 900;
+          text-transform: uppercase;
+          color: #D4AF37;
+          line-height: 1;
+          transition: all 0.4s ease;
+        }
         .nav-link { 
-          position: relative; background: none; border: none; cursor: pointer; 
+          background: none; border: none; cursor: pointer; 
           color: rgba(255, 255, 255, 0.6); font-family: var(--font-mono), monospace;
           font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
           transition: all 0.4s ease;
         }
-        .nav-link:hover { color: #D4AF37 !important; transform: scale(1.1); letter-spacing: 3px; }
+        .nav-link:hover { color: #D4AF37 !important; transform: scale(1.1); }
         
         .cta-button {
           padding: 12px 30px; border: 1px solid rgba(212, 175, 55, 0.5); 
@@ -58,12 +66,12 @@ export default function Header() {
           background: transparent; cursor: pointer; text-transform: uppercase;
           transition: all 0.4s ease;
         }
-        .cta-button:hover { background: rgba(212, 175, 55, 0.1); transform: scale(1.05); }
 
         @media (max-width: 768px) {
-          header { padding: 0 20px !important; height: 70px !important; background: rgba(5, 4, 2, 0.95) !important; }
+          header { padding: 0 20px !important; height: 70px !important; background: rgba(5, 4, 2, 0.98) !important; }
           .desktop-nav { display: none !important; }
-          .logo-subtext { display: none !important; }
+          .brand-text { font-size: 18px !important; letter-spacing: 4px !important; }
+          .cta-button { padding: 8px 16px !important; font-size: 8px !important; letter-spacing: 2px !important; }
         }
       `}</style>
 
@@ -81,15 +89,24 @@ export default function Header() {
           width: `${scrollProgress}%`, transition: 'width 0.1s ease-out'
         }} />
 
-        {/* Logo Section */}
-        <div onClick={() => scrollToSection('home')} style={{ display: 'flex', flexDirection: 'column', cursor: 'pointer' }}>
-          <img 
-            src="/assets/header-logo.png" 
-            alt="Simhaavatar" 
-            style={{ height: scrolled ? '30px' : '40px', width: 'auto', mixBlendMode: 'screen', transition: 'height 0.4s ease' }} 
-          />
-          <div className="logo-subtext" style={{ fontFamily: 'var(--font-mono)', fontSize: '7px', letterSpacing: '4px', color: '#D4AF37', opacity: 0.6, marginTop: '8px' }}>
-            MYSORE · EST. 2019
+        {/* Text Branding */}
+        <div onClick={() => scrollToSection('home')} style={{ cursor: 'pointer', textAlign: 'left' }}>
+          <div className="brand-text" style={{ 
+            fontSize: scrolled ? '20px' : '26px', 
+            letterSpacing: scrolled ? '6px' : '8px' 
+          }}>
+            Simhaavatar
+          </div>
+          <div style={{ 
+            fontFamily: 'var(--font-mono)', 
+            fontSize: '6px', 
+            letterSpacing: '4px', 
+            color: 'rgba(212, 175, 55, 0.4)', 
+            marginTop: '5px',
+            textTransform: 'uppercase',
+            display: scrolled ? 'none' : 'block' // Hide subtext on scroll for more space
+          }}>
+            Mysore Heritage
           </div>
         </div>
 
