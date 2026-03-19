@@ -26,7 +26,10 @@ export default function InfiniteScrollPage() {
     const handleScroll = () => {
       const scrollPos = window.scrollY
       const vh = window.innerHeight
+      
+      // Update CSS Variable for Parallax
       document.documentElement.style.setProperty('--scroll-y', `${scrollPos}px`)
+      
       setShowBackToTop(scrollPos > vh * 0.5)
 
       const collectionIndex = Math.floor((scrollPos - vh + vh/2) / vh)
@@ -45,7 +48,7 @@ export default function InfiniteScrollPage() {
     window.open(`https://wa.me/${myNumber}?text=${encodeURIComponent(message)}`, '_blank');
   };
 
-  // Styles
+  // Shared Styles
   const headingStyle = { fontFamily: 'var(--font-display)', fontWeight: 900, textTransform: 'uppercase', color: COLORS.ivory, lineHeight: 0.85, letterSpacing: '-0.02em' };
   const monoLabelStyle = { fontFamily: 'var(--font-mono)', fontSize: 10, color: COLORS.mysoreGold, letterSpacing: 6, textTransform: 'uppercase', opacity: 0.8 };
   const inputGroup = { display: 'flex', flexDirection: 'column', gap: '8px', textAlign: 'left' };
@@ -58,15 +61,44 @@ export default function InfiniteScrollPage() {
     <div style={{ background: COLORS.voidBlack, color: COLORS.ivory, overflowX: 'hidden', position: 'relative' }}>
       
       <style jsx global>{`
+        /* Global Reset */
+        html, body {
+          overflow-x: hidden;
+          position: relative;
+          width: 100%;
+          margin: 0;
+          padding: 0;
+        }
+
         @keyframes floatDust { 0% { bottom: -10vh; } 100% { bottom: 110vh; } }
-        .gold-dust { position: absolute; background: #D4AF37; border-radius: 50%; pointer-events: none; z-index: 1; will-change: transform; box-shadow: 0 0 10px rgba(212, 175, 55, 0.4); }
+        
+        .gold-dust { 
+          position: absolute; 
+          background: #D4AF37; 
+          border-radius: 50%; 
+          pointer-events: none; 
+          z-index: 1; 
+          will-change: transform; 
+          box-shadow: 0 0 10px rgba(212, 175, 55, 0.4); 
+        }
         
         /* ── MOBILE RESPONSIVENESS ENGINE ── */
         @media (max-width: 768px) {
           .hero-title { font-size: 44px !important; letter-spacing: 5px !important; line-height: 1.1 !important; }
           .section-padding { padding: 80px 6% !important; }
           .jewel-layer { width: 100vw !important; opacity: 0.35 !important; right: 0 !important; }
-          .massive-logo { width: 260px !important; right: -30px !important; top: -10px !important; opacity: 0.4 !important; }
+          
+          /* ── MOBILE CENTERED LOGO FIX ── */
+          .massive-logo-container {
+            top: 50% !important;
+            right: auto !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) !important;
+            width: 220px !important;
+            opacity: 0.25 !important;
+            z-index: 1 !important;
+          }
+
           .grid-responsive { grid-template-columns: 1fr !important; gap: 20px !important; }
           .form-grid { grid-template-columns: 1fr !important; }
         }
@@ -94,7 +126,7 @@ export default function InfiniteScrollPage() {
       <Header />
       <Watermark isPersistent={true} />
 
-            {/* ── MASSIVE TOP RIGHT LOGO (RESPONSIVE FIX) ── */}
+      {/* ── MASSIVE LOGO (CENTERS ON MOBILE) ── */}
       <div className="massive-logo-container" style={{ 
         position: 'fixed', 
         top: '-20px', 
@@ -106,7 +138,7 @@ export default function InfiniteScrollPage() {
       }}>
         <img 
           src="/assets/logo.png" 
-          alt="Simhaavatar" 
+          alt="Simhaavatar Logo Backdrop" 
           style={{ 
             width: 'clamp(280px, 35vw, 600px)', 
             height: 'auto', 
@@ -115,27 +147,6 @@ export default function InfiniteScrollPage() {
           }} 
         />
       </div>
-
-      {/* ── ADD THIS TO YOUR GLOBAL <style jsx> ── */}
-      <style jsx global>{`
-        /* Prevents the entire page from wobbling left/right because of the logo */
-        html, body {
-          overflow-x: hidden;
-          position: relative;
-          width: 100%;
-        }
-
-        @media (max-width: 768px) {
-          .massive-logo-container {
-            right: -20px !important; /* Pull it back in so it's not cut off */
-            top: -10px !important;
-            opacity: 0.5 !important; /* Make it more of a background element on mobile */
-          }
-          .massive-logo-container img {
-            width: 220px !important; /* Force a smaller size for mobile screens */
-          }
-        }
-      `}</style>
 
       {/* ── LAYER 3: FIXED 3D JEWELRY ── */}
       <div className="jewel-layer" style={{ position: 'fixed', top: 0, right: 0, width: '55vw', height: '100vh', zIndex: 0, pointerEvents: 'none', opacity: activeLook ? 1 : 0.8, transition: 'opacity 1.5s ease', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
