@@ -94,10 +94,48 @@ export default function InfiniteScrollPage() {
       <Header />
       <Watermark isPersistent={true} />
 
-      {/* ── MASSIVE TOP RIGHT LOGO ── */}
-      <div className="massive-logo" style={{ position: 'fixed', top: '-40px', right: '-60px', zIndex: 100, pointerEvents: 'none', filter: 'drop-shadow(0 0 30px rgba(212, 175, 55, 0.3))', opacity: 0.9 }}>
-        <img src="/assets/logo.png" alt="Simhaavatar" style={{ width: 'clamp(300px, 30vw, 600px)', height: 'auto', mixBlendMode: 'screen' }} />
+            {/* ── MASSIVE TOP RIGHT LOGO (RESPONSIVE FIX) ── */}
+      <div className="massive-logo-container" style={{ 
+        position: 'fixed', 
+        top: '-20px', 
+        right: '-40px', 
+        zIndex: 100, 
+        pointerEvents: 'none', 
+        filter: 'drop-shadow(0 0 30px rgba(212, 175, 55, 0.3))', 
+        opacity: 0.8 
+      }}>
+        <img 
+          src="/assets/logo.png" 
+          alt="Simhaavatar" 
+          style={{ 
+            width: 'clamp(280px, 35vw, 600px)', 
+            height: 'auto', 
+            mixBlendMode: 'screen',
+            display: 'block'
+          }} 
+        />
       </div>
+
+      {/* ── ADD THIS TO YOUR GLOBAL <style jsx> ── */}
+      <style jsx global>{`
+        /* Prevents the entire page from wobbling left/right because of the logo */
+        html, body {
+          overflow-x: hidden;
+          position: relative;
+          width: 100%;
+        }
+
+        @media (max-width: 768px) {
+          .massive-logo-container {
+            right: -20px !important; /* Pull it back in so it's not cut off */
+            top: -10px !important;
+            opacity: 0.5 !important; /* Make it more of a background element on mobile */
+          }
+          .massive-logo-container img {
+            width: 220px !important; /* Force a smaller size for mobile screens */
+          }
+        }
+      `}</style>
 
       {/* ── LAYER 3: FIXED 3D JEWELRY ── */}
       <div className="jewel-layer" style={{ position: 'fixed', top: 0, right: 0, width: '55vw', height: '100vh', zIndex: 0, pointerEvents: 'none', opacity: activeLook ? 1 : 0.8, transition: 'opacity 1.5s ease', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
