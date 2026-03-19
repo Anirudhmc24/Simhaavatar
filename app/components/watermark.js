@@ -1,5 +1,6 @@
 'use client'
 import { motion, useScroll, useTransform } from 'framer-motion';
+import Image from 'next/image'; // FIX 1: The missing import
 
 export default function Watermark({ isPersistent = false }) {
   const { scrollY } = useScroll();
@@ -22,12 +23,27 @@ export default function Watermark({ isPersistent = false }) {
       zIndex: -1, // Sits behind all content
       pointerEvents: 'none',
       display: 'flex',
-      justifyContent: 'center',
+      flexDirection: 'column', // Stack elements
+      alignItems: 'center',
       overflow: 'hidden'
     }}>
+
+      {/* ── SMALL LOGO OVERLAY ── */}
+      <div className="watermark-logo" style={{ marginBottom: '20px', opacity: 0.3 }}>
+        <Image 
+          src="/assets/logo.png"  
+          alt="Simhaavatar Logo"
+          width={120} 
+          height={40} 
+          priority 
+        />
+      </div>
+
+      {/* ── LARGE CINEMATIC SEAL ── */}
       <motion.div
         style={{
           opacity,
+          width: '100%',
           mixBlendMode: 'screen', // MAGIC: Removes the black background box
           filter: 'drop-shadow(0 0 80px rgba(212, 175, 55, 0.25))', // Golden Glow
         }}
@@ -42,7 +58,7 @@ export default function Watermark({ isPersistent = false }) {
           ease: "easeInOut"
         }}
       >
-        <Image
+        <img
           src="/assets/lion-watermark.png" 
           alt="Simhaavatar Royal Seal" 
           style={{ 
