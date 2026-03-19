@@ -26,7 +26,6 @@ export default function InfiniteScrollPage() {
   useEffect(() => {
     setMounted(true)
     
-    // ── VVIP ENTRANCE TIMER ──
     const timer = setTimeout(() => {
       setLoading(false);
     }, 2800);
@@ -34,10 +33,7 @@ export default function InfiniteScrollPage() {
     const handleScroll = () => {
       const scrollPos = window.scrollY
       const vh = window.innerHeight
-      
-      // Update CSS Variable for Parallax
       document.documentElement.style.setProperty('--scroll-y', `${scrollPos}px`)
-      
       setShowBackToTop(scrollPos > vh * 0.5)
 
       const collectionIndex = Math.floor((scrollPos - vh + vh/2) / vh)
@@ -56,15 +52,13 @@ export default function InfiniteScrollPage() {
   const handleWhatsApp = (e) => {
     e.preventDefault();
     const myNumber = "919632838185"; 
-    const message = `*SIMHAAVATAR CONCIERGE REQUEST*\n-------------------------------\n*Client:* ${formData.name}\n*Contact:* ${formData.phone}\n*Occasion:* ${formData.occasion}\n*Date:* ${formData.date}\n-------------------------------\nHello, I am interested in a private viewing of the collection. Please advise on availability.`;
+    const message = `*SIMHAAVATAR CONCIERGE REQUEST*\n-------------------------------\n*Client:* ${formData.name}\n*Contact:* ${formData.phone}\n*Occasion:* ${formData.occasion}\n*Date:* ${formData.date}\n-------------------------------\nHello, I am interested in a private viewing of the collection.`;
     window.open(`https://wa.me/${myNumber}?text=${encodeURIComponent(message)}`, '_blank');
   };
 
   // Shared Styles
   const headingStyle = { fontFamily: 'var(--font-display)', fontWeight: 900, textTransform: 'uppercase', color: COLORS.ivory, lineHeight: 0.85, letterSpacing: '-0.02em' };
   const monoLabelStyle = { fontFamily: 'var(--font-mono)', fontSize: 10, color: COLORS.mysoreGold, letterSpacing: 6, textTransform: 'uppercase', opacity: 0.8 };
-  const inputGroup = { display: 'flex', flexDirection: 'column', gap: '8px', textAlign: 'left' };
-  const labelStyle = { fontFamily: 'var(--font-mono)', fontSize: '9px', color: 'rgba(212, 175, 55, 0.6)', letterSpacing: '2px', textTransform: 'uppercase' };
   const inputStyle = { background: 'transparent', border: 'none', borderBottom: '1px solid rgba(212, 175, 55, 0.3)', padding: '10px 0', color: '#FFFFFF', fontFamily: 'var(--font-mono)', fontSize: '14px', outline: 'none', borderRadius: 0 };
 
   if (!mounted) return null;
@@ -72,11 +66,9 @@ export default function InfiniteScrollPage() {
   return (
     <div style={{ background: COLORS.voidBlack, color: COLORS.ivory, overflowX: 'hidden', position: 'relative' }}>
       
-      {/* ── THE ENTRANCE ── */}
       <Loader isLoading={loading} />
 
       <style jsx global>{`
-        /* Global Reset for Horizontal Stability */
         html, body {
           overflow-x: hidden;
           position: relative;
@@ -102,16 +94,9 @@ export default function InfiniteScrollPage() {
           .section-padding { padding: 80px 6% !important; }
           .jewel-layer { width: 100vw !important; opacity: 0.35 !important; right: 0 !important; }
           
-          /* ── MOBILE TOP-CENTER LOGO FIX ── */
+          /* ── HIDE BACKGROUND LOGO ON MOBILE ── */
           .massive-logo-container {
-            top: 80px !important;
-            right: auto !important;
-            left: 50% !important;
-            bottom: auto !important;
-            transform: translateX(-50%) !important;
-            width: 240px !important;
-            opacity: 0.3 !important;
-            z-index: 1 !important;
+            display: none !important;
           }
 
           .grid-responsive { grid-template-columns: 1fr !important; gap: 20px !important; }
@@ -141,7 +126,7 @@ export default function InfiniteScrollPage() {
       <Header />
       <Watermark isPersistent={true} />
 
-      {/* ── MASSIVE LOGO (CENTERS TOP ON MOBILE) ── */}
+      {/* ── MASSIVE LOGO (DESKTOP ONLY) ── */}
       <div className="massive-logo-container" style={{ 
         position: 'fixed', 
         top: '-20px', 
@@ -153,22 +138,15 @@ export default function InfiniteScrollPage() {
       }}>
         <img 
           src="/assets/logo.png" 
-          alt="Simhaavatar Logo Backdrop" 
-          style={{ 
-            width: 'clamp(280px, 35vw, 600px)', 
-            height: 'auto', 
-            mixBlendMode: 'screen',
-            display: 'block'
-          }} 
+          alt="Simhaavatar Backdrop" 
+          style={{ width: 'clamp(280px, 35vw, 600px)', height: 'auto', mixBlendMode: 'screen', display: 'block' }} 
         />
       </div>
 
-      {/* ── LAYER 3: FIXED 3D JEWELRY ── */}
       <div className="jewel-layer" style={{ position: 'fixed', top: 0, right: 0, width: '55vw', height: '100vh', zIndex: 0, pointerEvents: 'none', opacity: activeLook ? 1 : 0.8, transition: 'opacity 1.5s ease', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <JewelCanvas accent={activeLook ? activeLook.accent : COLORS.mysoreGold} />
       </div>
 
-      {/* ── LAYER 10: CONTENT ── */}
       <div style={{ position: 'relative', zIndex: 10 }}>
         
         {/* HERO */}
@@ -208,7 +186,7 @@ export default function InfiniteScrollPage() {
           ))}
         </div>
 
-        {/* ABOUT */}
+        {/* ABOUT & FAQ SECTIONS (Data Mapped from lib/tokens) */}
         <section id="about" className="section-padding" style={{ padding: '160px 8%', background: 'rgba(5,5,5,0.95)', backdropFilter: 'blur(10px)' }}>
           <div style={{ maxWidth: 1000, margin: '0 auto', textAlign: 'center' }}>
             <p style={{ ...monoLabelStyle, marginBottom: 20 }}>Our Story</p>
@@ -236,7 +214,6 @@ export default function InfiniteScrollPage() {
           </div>
         </section>
 
-        {/* FAQ */}
         <section id="faq" className="section-padding" style={{ padding: '120px 8%', background: '#080808' }}>
           <div style={{ maxWidth: 900, margin: '0 auto' }}>
             <p style={{ ...monoLabelStyle, textAlign: 'center', marginBottom: 20 }}>Concierge</p>
@@ -263,34 +240,20 @@ export default function InfiniteScrollPage() {
           </div>
         </section>
 
-        {/* CONTACT */}
+        {/* CONTACT SECTION */}
         <section id="contact" className="section-padding" style={{ padding: '150px 8%', background: COLORS.voidBlack, textAlign: 'center' }}>
           <div style={{ maxWidth: '500px', margin: '0 auto' }}>
             <h2 style={{ ...headingStyle, fontSize: '42px', marginBottom: '12px' }}>Book a Look</h2>
-            <p style={{ ...monoLabelStyle, fontSize: '10px', marginBottom: '60px' }}>Private Concierge</p>
-
             <form onSubmit={handleWhatsApp} style={{ display: 'grid', gap: '35px' }}>
-              <div style={inputGroup}><label style={labelStyle}>Full Name</label><input type="text" required style={inputStyle} onChange={(e) => setFormData({...formData, name: e.target.value})} /></div>
-              <div style={inputGroup}><label style={labelStyle}>WhatsApp Number</label><input type="tel" required placeholder="+91" style={inputStyle} onChange={(e) => setFormData({...formData, phone: e.target.value})} /></div>
-              <div className="form-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
-                <div style={inputGroup}><label style={labelStyle}>Occasion</label>
-                  <select style={inputStyle} onChange={(e) => setFormData({...formData, occasion: e.target.value})}>
-                    <option value="General Inquiry">Select...</option>
-                    <option value="Wedding">Wedding</option>
-                    <option value="Engagement">Engagement</option>
-                    <option value="Photoshoot">Photoshoot</option>
-                  </select>
-                </div>
-                <div style={inputGroup}><label style={labelStyle}>Preferred Date</label><input type="date" style={inputStyle} onChange={(e) => setFormData({...formData, date: e.target.value})} /></div>
-              </div>
-              <button type="submit" style={{ marginTop: '20px', padding: '22px', background: COLORS.mysoreGold, color: COLORS.voidBlack, border: 'none', borderRadius: 2, fontFamily: 'var(--font-mono)', fontWeight: '900', letterSpacing: 5, cursor: 'pointer', textTransform: 'uppercase' }}>Confirm via WhatsApp</button>
+              <input type="text" placeholder="NAME" required style={inputStyle} onChange={(e) => setFormData({...formData, name: e.target.value})} />
+              <input type="tel" placeholder="WHATSAPP" required style={inputStyle} onChange={(e) => setFormData({...formData, phone: e.target.value})} />
+              <button type="submit" style={{ marginTop: '20px', padding: '22px', background: COLORS.mysoreGold, color: COLORS.voidBlack, border: 'none', fontWeight: '900', letterSpacing: 5, cursor: 'pointer', textTransform: 'uppercase' }}>Confirm via WhatsApp</button>
             </form>
           </div>
         </section>
 
       </div>
       <Footer />
-      {isFormOpen && <RentalForm look={activeLook} onClose={() => setIsFormOpen(false)} />}
     </div>
   )
 }

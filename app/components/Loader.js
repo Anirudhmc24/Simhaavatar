@@ -34,7 +34,7 @@ export default function Loader({ isLoading }) {
             style={{ width: '200px', textAlign: 'center' }}
           >
             <img 
-              src="/assets/logo.png" 
+              src="/assets/loader-website.png" 
               alt="Simhaavatar Loading" 
               style={{ width: '100%', height: 'auto', mixBlendMode: 'screen', filter: 'brightness(1.2)' }} 
             />
