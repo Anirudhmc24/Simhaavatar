@@ -5,7 +5,7 @@ import JewelCanvas from './components/JewelCanvas'
 import Watermark from './components/watermark' 
 import RentalForm from './components/RentalForm'
 import Footer from './components/Footer'
-import { COLORS, FONTS, LOOKS, FAQ_DATA, TEAM } from './lib/tokens'
+import { COLORS, LOOKS, FAQ_DATA, TEAM } from './lib/tokens'
 
 export default function InfiniteScrollPage() {
   const [activeLook, setActiveLook] = useState(LOOKS[0])
@@ -14,11 +14,23 @@ export default function InfiniteScrollPage() {
   const [openFaq, setOpenFaq] = useState(null)
   const [mounted, setMounted] = useState(false)
 
+  // WhatsApp Form State
+  const [formData, setFormData] = useState({ 
+    name: '', 
+    phone: '', 
+    occasion: 'General Inquiry', 
+    date: '' 
+  })
+
   useEffect(() => {
     setMounted(true)
     const handleScroll = () => {
       const scrollPos = window.scrollY
       const vh = window.innerHeight
+
+      // ── PARALLAX ENGINE ──
+      document.documentElement.style.setProperty('--scroll-y', `${scrollPos}px`)
+
       setShowBackToTop(scrollPos > vh * 0.5)
 
       const collectionIndex = Math.floor((scrollPos - vh + vh/2) / vh)
@@ -30,93 +42,76 @@ export default function InfiniteScrollPage() {
     return () => window.removeEventListener('scroll', handleScroll)
   }, [activeLook])
 
-  const headingStyle = {
-    fontFamily: 'var(--font-display)',
-    fontWeight: 900,
-    textTransform: 'uppercase',
-    color: COLORS.ivory,
-    lineHeight: 0.85,
-    letterSpacing: '-0.02em'
+  const handleWhatsApp = (e) => {
+    e.preventDefault();
+    const myNumber = "919632838185"; 
+    const message = `*SIMHAAVATAR CONCIERGE REQUEST*\n-------------------------------\n*Client:* ${formData.name}\n*Contact:* ${formData.phone}\n*Occasion:* ${formData.occasion}\n*Date:* ${formData.date}\n-------------------------------\nHello, I am interested in a private viewing of the collection. Please advise on availability.`;
+
+    window.open(`https://wa.me/${myNumber}?text=${encodeURIComponent(message)}`, '_blank');
   };
 
-  const monoLabelStyle = {
-    fontFamily: 'var(--font-mono)',
-    fontSize: 10,
-    color: COLORS.mysoreGold,
-    letterSpacing: 6,
-    textTransform: 'uppercase',
-    opacity: 0.8
-  };
+  // ── SHARED STYLES ──
+  const headingStyle = { fontFamily: 'var(--font-display)', fontWeight: 900, textTransform: 'uppercase', color: COLORS.ivory, lineHeight: 0.85, letterSpacing: '-0.02em' };
+  const monoLabelStyle = { fontFamily: 'var(--font-mono)', fontSize: 10, color: COLORS.mysoreGold, letterSpacing: 6, textTransform: 'uppercase', opacity: 0.8 };
+  const inputGroup = { display: 'flex', flexDirection: 'column', gap: '8px', textAlign: 'left' };
+  const labelStyle = { fontFamily: 'var(--font-mono)', fontSize: '9px', color: 'rgba(212, 175, 55, 0.6)', letterSpacing: '2px', textTransform: 'uppercase' };
+  const inputStyle = { background: 'transparent', border: 'none', borderBottom: '1px solid rgba(212, 175, 55, 0.3)', padding: '10px 0', color: '#FFFFFF', fontFamily: 'var(--font-mono)', fontSize: '14px', outline: 'none', borderRadius: 0 };
+
+  if (!mounted) return null;
 
   return (
     <div style={{ background: COLORS.voidBlack, color: COLORS.ivory, overflowX: 'hidden', position: 'relative' }}>
       
-      {/* ── CSS ANIMATIONS ── */}
       <style jsx global>{`
         @keyframes floatDust {
-          0% { transform: translateY(0) translateX(0); opacity: 0; }
-          20% { opacity: 0.3; }
-          80% { opacity: 0.3; }
-          100% { transform: translateY(-100vh) translateX(20px); opacity: 0; }
+          0% { bottom: -10vh; }
+          100% { bottom: 110vh; }
         }
         .gold-dust {
-          position: fixed;
+          position: absolute;
           background: #D4AF37;
           border-radius: 50%;
           pointer-events: none;
           z-index: 1; 
-          filter: blur(1px);
+          will-change: transform;
+          box-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
         }
       `}</style>
 
-      {/* Gold Dust Particles */}
-      <div style={{ position: 'fixed', inset: 0, zIndex: 1, pointerEvents: 'none' }}>
-        {[...Array(25)].map((_, i) => (
-          <div key={i} className="gold-dust" style={{
-            width: (Math.random() * 2 + 1) + 'px',
-            height: (Math.random() * 2 + 1) + 'px',
-            left: (Math.random() * 100) + 'vw',
-            bottom: '-5vh',
-            animation: `floatDust ${12 + Math.random() * 18}s linear infinite`,
-            animationDelay: (Math.random() * 10) + 's',
-          }} />
-        ))}
+      {/* ── LAYER 1: PARALLAX GOLD DUST ── */}
+      <div style={{ position: 'fixed', inset: 0, zIndex: 1, pointerEvents: 'none', overflow: 'hidden' }}>
+        {mounted && [...Array(40)].map((_, i) => {
+          const depth = Math.random() * 0.7 + 0.1; 
+          return (
+            <div 
+              key={`dust-${i}`} 
+              className="gold-dust" 
+              style={{
+                width: (depth * 6 + 2) + 'px', 
+                height: (depth * 6 + 2) + 'px',
+                left: (Math.random() * 100) + 'vw',
+                animation: `floatDust ${15 + Math.random() * 25}s linear infinite`,
+                animationDelay: `-${Math.random() * 20}s`,
+                opacity: depth + 0.2,
+                transform: `translateY(calc(var(--scroll-y) * -${depth * 0.25}))`,
+                filter: `blur(${depth * 1.5}px)`,
+              }} 
+            />
+          )
+        })}
       </div>
 
       <Header />
       <Watermark isPersistent={true} />
 
-      {/* ── PERSISTENT BACK TO TOP (Bottom Left) ── */}
-      <button 
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        style={{
-          position: 'fixed', bottom: '40px', left: '40px', zIndex: 100,
-          background: 'rgba(212, 175, 55, 0.05)', backdropFilter: 'blur(10px)',
-          border: `1px solid ${COLORS.mysoreGold}33`, color: COLORS.mysoreGold,
-          fontFamily: 'var(--font-mono)', fontSize: '10px', padding: '12px 24px',
-          borderRadius: '2px', letterSpacing: '4px', cursor: 'pointer',
-          opacity: showBackToTop ? 1 : 0,
-          transform: showBackToTop ? 'translateY(0)' : 'translateY(20px)',
-          transition: 'all 0.5s cubic-bezier(0.16, 1, 0.3, 1)',
-          pointerEvents: showBackToTop ? 'auto' : 'none'
-        }}
-      >
-        TOP ↑
-      </button>
+      {/* ── MASSIVE TOP RIGHT LOGO ── */}
+      <div style={{ position: 'fixed', top: '-40px', right: '-60px', zIndex: 100, pointerEvents: 'none', filter: 'drop-shadow(0 0 30px rgba(212, 175, 55, 0.3))', opacity: 0.9 }}>
+        <img src="/assets/logo.png" alt="Simhaavatar" style={{ width: 'clamp(300px, 30vw, 600px)', height: 'auto', mixBlendMode: 'screen' }} />
+      </div>
 
-      {/* ── LAYER 3: FIXED 3D JEWELRY (RIGHT ALIGNED) ── */}
-      <div style={{ 
-        position: 'fixed', top: 0, right: 0, width: '55vw', height: '100vh', 
-        zIndex: 0, pointerEvents: 'none',
-        opacity: activeLook ? 1 : 0.8, transition: 'opacity 1.5s ease-in-out',
-        display: 'flex', justifyContent: 'center', alignItems: 'center'
-      }}>
-        {mounted && (
-          <JewelCanvas 
-            accent={activeLook ? activeLook.accent : COLORS.mysoreGold} 
-            style={{ width: '100%', height: '100%' }}
-          />
-        )}
+      {/* ── LAYER 3: FIXED 3D JEWELRY ── */}
+      <div style={{ position: 'fixed', top: 0, right: 0, width: '55vw', height: '100vh', zIndex: 0, pointerEvents: 'none', opacity: activeLook ? 1 : 0.8, transition: 'opacity 1.5s ease', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <JewelCanvas accent={activeLook ? activeLook.accent : COLORS.mysoreGold} />
       </div>
 
       {/* ── LAYER 10: CONTENT ── */}
@@ -143,35 +138,35 @@ export default function InfiniteScrollPage() {
         {/* COLLECTION */}
         <div id="collection">
           {LOOKS.map((look, i) => (
-            <section key={look.id} style={{ height: '100vh', display: 'flex', alignItems: 'center', padding: '0 8%', background: 'rgba(5,5,5,0.05)' }}>
+            <section key={look.id} style={{ height: '100vh', display: 'flex', alignItems: 'center', padding: '0 8%' }}>
               <div style={{ maxWidth: 650 }}>
                 <span style={{ ...monoLabelStyle, color: look.accent }}>{look.kannada} / 0{i + 1}</span>
                 <h2 style={{ ...headingStyle, fontSize: 'clamp(44px, 7vw, 92px)', margin: '16px 0' }}>{look.title}</h2>
                 <p style={{ fontFamily: 'var(--font-serif)', fontSize: 20, color: 'rgba(255,255,255,0.5)', marginBottom: 48, fontStyle: 'italic', lineHeight: 1.8 }}>{look.description}</p>
                 <button 
-                  onClick={() => setIsFormOpen(true)} 
+                  onClick={() => document.getElementById('contact').scrollIntoView({behavior:'smooth'})} 
                   style={{ padding: '20px 60px', background: look.accent, color: COLORS.voidBlack, border: 'none', borderRadius: 2, fontFamily: 'var(--font-mono)', fontWeight: '900', letterSpacing: 4, cursor: 'pointer' }}
                 >
-                  ENQUIRE NOW
+                  BOOK A LOOK
                 </button>
               </div>
             </section>
           ))}
         </div>
 
-        {/* ABOUT */}
+        {/* ABOUT (RESTORED) */}
         <section id="about" style={{ padding: '160px 8%', background: 'rgba(5,5,5,0.95)', backdropFilter: 'blur(10px)' }}>
           <div style={{ maxWidth: 1000, margin: '0 auto', textAlign: 'center' }}>
             <p style={{ ...monoLabelStyle, marginBottom: 20 }}>Our Story</p>
             <h2 style={{ ...headingStyle, fontSize: 'clamp(40px, 5vw, 72px)', marginBottom: 60 }}>The House of Simhaavatar</h2>
             <p style={{ fontFamily: 'var(--font-serif)', fontSize: 22, lineHeight: 1.8, fontStyle: 'italic', color: 'rgba(255,255,255,0.8)', marginBottom: 100 }}>
               Simhaavatar was founded on a single belief: that every man deserves to wear the jewellery of kings. 
-              Rooted in Mysore’s heritage, we make temple gold accessible.
+              Rooted in Mysore’s heritage, we make temple gold accessible for the modern man.
             </p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 24, marginBottom: 140 }}>
               {['Authentic Craft', 'Rental First', 'Styled for Men'].map((title) => (
                 <div key={title} style={{ padding: '60px 30px', border: '1px solid rgba(212,175,55,0.12)', background: 'rgba(212,175,55,0.02)', borderRadius: 2 }}>
-                  <h3 style={{ color: COLORS.mysoreGold, marginBottom: 15, fontFamily: 'var(--font-display)', fontSize: 22, letterSpacing: 1 }}>{title}</h3>
+                  <h3 style={{ color: COLORS.mysoreGold, marginBottom: 15, fontFamily: 'var(--font-display)', fontSize: 22 }}>{title}</h3>
                 </div>
               ))}
             </div>
@@ -187,7 +182,7 @@ export default function InfiniteScrollPage() {
           </div>
         </section>
 
-        {/* FAQ */}
+        {/* FAQ (RESTORED) */}
         <section id="faq" style={{ padding: '120px 8%', background: '#080808' }}>
           <div style={{ maxWidth: 900, margin: '0 auto' }}>
             <p style={{ ...monoLabelStyle, textAlign: 'center', marginBottom: 20 }}>Concierge</p>
@@ -215,9 +210,28 @@ export default function InfiniteScrollPage() {
         </section>
 
         {/* CONTACT */}
-        <section id="contact" style={{ padding: '180px 8%', background: COLORS.voidBlack, textAlign: 'center' }}>
-          <h2 style={{ ...headingStyle, fontSize: 'clamp(44px, 7vw, 92px)', marginBottom: 24 }}>Legacy Defined.</h2>
-          <button onClick={() => window.open('https://wa.me/919632838185')} style={{ padding: '22px 64px', background: COLORS.mysoreGold, color: COLORS.voidBlack, border: 'none', borderRadius: 2, fontFamily: 'var(--font-mono)', fontWeight: '900', letterSpacing: 5, cursor: 'pointer' }}>WHATSAPP CONCIERGE</button>
+        <section id="contact" style={{ padding: '150px 8%', background: COLORS.voidBlack, textAlign: 'center' }}>
+          <div style={{ maxWidth: '500px', margin: '0 auto' }}>
+            <h2 style={{ ...headingStyle, fontSize: '48px', marginBottom: '12px' }}>Book a Look</h2>
+            <p style={{ ...monoLabelStyle, fontSize: '10px', marginBottom: '60px' }}>Private Concierge</p>
+
+            <form onSubmit={handleWhatsApp} style={{ display: 'grid', gap: '35px' }}>
+              <div style={inputGroup}><label style={labelStyle}>Full Name</label><input type="text" required style={inputStyle} onChange={(e) => setFormData({...formData, name: e.target.value})} /></div>
+              <div style={inputGroup}><label style={labelStyle}>WhatsApp Number</label><input type="tel" required placeholder="+91" style={inputStyle} onChange={(e) => setFormData({...formData, phone: e.target.value})} /></div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                <div style={inputGroup}><label style={labelStyle}>Occasion</label>
+                  <select style={inputStyle} onChange={(e) => setFormData({...formData, occasion: e.target.value})}>
+                    <option value="General Inquiry">Select...</option>
+                    <option value="Wedding">Wedding</option>
+                    <option value="Engagement">Engagement</option>
+                    <option value="Photoshoot">Photoshoot</option>
+                  </select>
+                </div>
+                <div style={inputGroup}><label style={labelStyle}>Preferred Date</label><input type="date" style={inputStyle} onChange={(e) => setFormData({...formData, date: e.target.value})} /></div>
+              </div>
+              <button type="submit" style={{ marginTop: '20px', padding: '22px', background: COLORS.mysoreGold, color: COLORS.voidBlack, border: 'none', borderRadius: 2, fontFamily: 'var(--font-mono)', fontWeight: '900', letterSpacing: 5, cursor: 'pointer', textTransform: 'uppercase' }}>Confirm via WhatsApp</button>
+            </form>
+          </div>
         </section>
 
       </div>

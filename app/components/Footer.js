@@ -1,7 +1,12 @@
 'use client';
 import Link from 'next/link';
+import React from 'react';
 
 export default function Footer() {
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <footer style={{
       borderTop: '1px solid rgba(212,175,55,0.08)',
@@ -13,7 +18,8 @@ export default function Footer() {
       flexWrap: 'wrap',
       gap: 24,
     }}>
-      <div>
+      
+    <div>
         <div style={{ fontFamily: 'var(--font-display)', fontSize: 22, color: '#D4AF37', letterSpacing: 3, marginBottom: 4 }}>
           SIMHAAVATAR
         </div>
@@ -21,6 +27,37 @@ export default function Footer() {
           MYSORE, KARNATAKA · © 2025
         </div>
       </div>
+
+      {/* ── SCROLL TO TOP BUTTON ── */}
+      <button 
+        onClick={scrollToTop}
+        style={{ 
+          width: '56px',
+          height: '56px',
+          border: '1px solid rgba(212, 175, 55, 0.3)', 
+          borderRadius: '50%', 
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          background: 'transparent', 
+          cursor: 'pointer',
+          transition: 'all 0.4s ease'
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.borderColor = '#D4AF37';
+          e.currentTarget.style.background = 'rgba(212, 175, 55, 0.05)';
+          e.currentTarget.style.transform = 'translateY(-8px)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.3)';
+          e.currentTarget.style.background = 'transparent';
+          e.currentTarget.style.transform = 'translateY(0)';
+        }}
+      >
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#D4AF37" strokeWidth="1.5">
+          <path d="M18 15l-6-6-6 6" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+      </button>
 
       <nav style={{ display: 'flex', gap: 28, flexWrap: 'wrap' }}>
         {[
@@ -49,9 +86,25 @@ export default function Footer() {
         ))}
       </nav>
 
-      <div style={{ fontFamily: 'var(--font-serif)', fontSize: 13, color: 'rgba(255,255,255,0.2)', fontStyle: 'italic' }}>
-        Royal Heritage Handcrafted Jewels
+      {/* ── COPYRIGHT BAR ── */}
+      <div style={{ 
+        width: '100%', 
+        maxWidth: '1200px',
+        borderTop: '1px solid rgba(255, 255, 255, 0.05)',
+        paddingTop: '40px',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        gap: '20px',
+        fontFamily: 'var(--font-mono)',
+        fontSize: '9px',
+        letterSpacing: '1px',
+        color: 'rgba(255,255,255,0.2)',
+        textTransform: 'uppercase'
+      }}>
       </div>
     </footer>
   );
 }
+
+
