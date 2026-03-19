@@ -21,13 +21,6 @@ export default function Header() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const navLinks = [
-    { id: 'home', label: 'Home' },
-    { id: 'collection', label: 'Looks' },
-    { id: 'about', label: 'About' },
-    { id: 'faq', label: 'FAQ' },
-  ];
-
   const scrollToSection = (id) => {
     const element = document.getElementById(id);
     if (element) element.scrollIntoView({ behavior: 'smooth' });
@@ -39,25 +32,30 @@ export default function Header() {
     <>
       <style jsx>{`
         header { 
-          position: fixed; top: 0; left: 0; right: 0; zIndex: 500; 
+          position: fixed; top: 0; left: 0; right: 0; z-index: 500; 
           display: flex; align-items: center; justify-content: space-between;
           transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
+        /* ── BRANDING LOGIC ── */
+        .desktop-brand { display: block; }
+        .mobile-brand { display: none; }
+
         .brand-text {
           font-family: var(--font-display), serif;
           font-weight: 900;
           text-transform: uppercase;
           color: #D4AF37;
           line-height: 1;
-          transition: all 0.4s ease;
         }
+
         .nav-link { 
           background: none; border: none; cursor: pointer; 
           color: rgba(255, 255, 255, 0.6); font-family: var(--font-mono), monospace;
           font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-          transition: all 0.4s ease;
+          transition: all 0.3s ease;
         }
-        .nav-link:hover { color: #D4AF37 !important; transform: scale(1.1); }
+        .nav-link:hover { color: #D4AF37; transform: scale(1.1); }
         
         .cta-button {
           padding: 12px 30px; border: 1px solid rgba(212, 175, 55, 0.5); 
@@ -67,11 +65,15 @@ export default function Header() {
           transition: all 0.4s ease;
         }
 
+        /* ── MOBILE OVERRIDES ── */
         @media (max-width: 768px) {
           header { padding: 0 20px !important; height: 70px !important; background: rgba(5, 4, 2, 0.98) !important; }
+          
+          .desktop-brand { display: none !important; } /* Hide Text */
+          .mobile-brand { display: block !important; }  /* Show Logo */
+          
           .desktop-nav { display: none !important; }
-          .brand-text { font-size: 18px !important; letter-spacing: 4px !important; }
-          .cta-button { padding: 8px 16px !important; font-size: 8px !important; letter-spacing: 2px !important; }
+          .cta-button { padding: 8px 15px !important; font-size: 8px !important; }
         }
       `}</style>
 
@@ -89,32 +91,35 @@ export default function Header() {
           width: `${scrollProgress}%`, transition: 'width 0.1s ease-out'
         }} />
 
-        {/* Text Branding */}
-        <div onClick={() => scrollToSection('home')} style={{ cursor: 'pointer', textAlign: 'left' }}>
-          <div className="brand-text" style={{ 
-            fontSize: scrolled ? '20px' : '26px', 
-            letterSpacing: scrolled ? '6px' : '8px' 
-          }}>
-            Simhaavatar
+        {/* Branding Container */}
+        <div onClick={() => scrollToSection('home')} style={{ cursor: 'pointer' }}>
+          
+          {/* DESKTOP: TEXT ONLY */}
+          <div className="desktop-brand">
+            <div className="brand-text" style={{ 
+              fontSize: scrolled ? '20px' : '26px', 
+              letterSpacing: scrolled ? '6px' : '8px' 
+            }}>
+              Simhaavatar
+            </div>
           </div>
-          <div style={{ 
-            fontFamily: 'var(--font-mono)', 
-            fontSize: '6px', 
-            letterSpacing: '4px', 
-            color: 'rgba(212, 175, 55, 0.4)', 
-            marginTop: '5px',
-            textTransform: 'uppercase',
-            display: scrolled ? 'none' : 'block' // Hide subtext on scroll for more space
-          }}>
-            Mysore Heritage
+
+          {/* MOBILE: LOGO ONLY */}
+          <div className="mobile-brand">
+            <img 
+              src="/assets/header-logo.png" 
+              alt="Simhaavatar Logo" 
+              style={{ height: '32px', width: 'auto', mixBlendMode: 'screen' }} 
+            />
           </div>
+          
         </div>
 
-        {/* Navigation */}
-        <nav className="desktop-nav" style={{ display: 'flex', gap: '40px' }}>
-          {navLinks.map((link) => (
-            <button key={link.id} onClick={() => scrollToSection(link.id)} className="nav-link">
-              {link.label}
+        {/* Desktop Nav */}
+        <nav className="desktop-nav" style={{ display: 'flex', gap: '30px' }}>
+          {['home', 'collection', 'about', 'faq'].map((id) => (
+            <button key={id} onClick={() => scrollToSection(id)} className="nav-link">
+              {id}
             </button>
           ))}
         </nav>

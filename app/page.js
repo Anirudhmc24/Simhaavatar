@@ -6,6 +6,7 @@ import Watermark from './components/watermark'
 import RentalForm from './components/RentalForm'
 import Footer from './components/Footer'
 import { COLORS, LOOKS, FAQ_DATA, TEAM } from './lib/tokens'
+import Loader from './components/Loader'
 
 export default function InfiniteScrollPage() {
   const [activeLook, setActiveLook] = useState(LOOKS[0])
@@ -13,6 +14,7 @@ export default function InfiniteScrollPage() {
   const [showBackToTop, setShowBackToTop] = useState(false)
   const [openFaq, setOpenFaq] = useState(null)
   const [mounted, setMounted] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   const [formData, setFormData] = useState({ 
     name: '', 
@@ -23,6 +25,12 @@ export default function InfiniteScrollPage() {
 
   useEffect(() => {
     setMounted(true)
+    
+    // ── VVIP ENTRANCE TIMER ──
+    const timer = setTimeout(() => {
+      setLoading(false);
+    }, 2800);
+
     const handleScroll = () => {
       const scrollPos = window.scrollY
       const vh = window.innerHeight
@@ -37,8 +45,12 @@ export default function InfiniteScrollPage() {
         setActiveLook(LOOKS[collectionIndex])
       }
     }
+
     window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      clearTimeout(timer)
+    }
   }, [activeLook])
 
   const handleWhatsApp = (e) => {
@@ -60,6 +72,9 @@ export default function InfiniteScrollPage() {
   return (
     <div style={{ background: COLORS.voidBlack, color: COLORS.ivory, overflowX: 'hidden', position: 'relative' }}>
       
+      {/* ── THE ENTRANCE ── */}
+      <Loader isLoading={loading} />
+
       <style jsx global>{`
         /* Global Reset for Horizontal Stability */
         html, body {
@@ -89,13 +104,13 @@ export default function InfiniteScrollPage() {
           
           /* ── MOBILE TOP-CENTER LOGO FIX ── */
           .massive-logo-container {
-            top: 80px !important;       /* Positions it just below the header */
+            top: 80px !important;
             right: auto !important;
             left: 50% !important;
             bottom: auto !important;
-            transform: translateX(-50%) !important; /* Only center horizontally */
-            width: 240px !important;    /* Slightly larger for top-center visibility */
-            opacity: 0.3 !important;    /* Subtle enough not to distract from Hero text */
+            transform: translateX(-50%) !important;
+            width: 240px !important;
+            opacity: 0.3 !important;
             z-index: 1 !important;
           }
 
@@ -126,7 +141,7 @@ export default function InfiniteScrollPage() {
       <Header />
       <Watermark isPersistent={true} />
 
-      {/* ── MASSIVE LOGO (CENTERS ON MOBILE) ── */}
+      {/* ── MASSIVE LOGO (CENTERS TOP ON MOBILE) ── */}
       <div className="massive-logo-container" style={{ 
         position: 'fixed', 
         top: '-20px', 

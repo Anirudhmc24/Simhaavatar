@@ -66,17 +66,6 @@ export default function Watermark({ isPersistent = true }) {
           />
         </motion.div>
 
-        <div style={{ 
-          marginTop: '15px',
-          fontFamily: 'var(--font-mono)', 
-          fontSize: '7px', 
-          letterSpacing: '5px', 
-          color: '#D4AF37', 
-          opacity: 0.3,
-          textTransform: 'uppercase'
-        }}>
-          Authentic Heritage
-        </div>
       </div>
     </>
   );
