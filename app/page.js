@@ -61,7 +61,7 @@ export default function InfiniteScrollPage() {
     <div style={{ background: COLORS.voidBlack, color: COLORS.ivory, overflowX: 'hidden', position: 'relative' }}>
       
       <style jsx global>{`
-        /* Global Reset */
+        /* Global Reset for Horizontal Stability */
         html, body {
           overflow-x: hidden;
           position: relative;
@@ -79,7 +79,6 @@ export default function InfiniteScrollPage() {
           pointer-events: none; 
           z-index: 1; 
           will-change: transform; 
-          box-shadow: 0 0 10px rgba(212, 175, 55, 0.4); 
         }
         
         /* ── MOBILE RESPONSIVENESS ENGINE ── */
@@ -88,14 +87,15 @@ export default function InfiniteScrollPage() {
           .section-padding { padding: 80px 6% !important; }
           .jewel-layer { width: 100vw !important; opacity: 0.35 !important; right: 0 !important; }
           
-          /* ── MOBILE CENTERED LOGO FIX ── */
+          /* ── MOBILE TOP-CENTER LOGO FIX ── */
           .massive-logo-container {
-            top: 50% !important;
+            top: 80px !important;       /* Positions it just below the header */
             right: auto !important;
             left: 50% !important;
-            transform: translate(-50%, -50%) !important;
-            width: 220px !important;
-            opacity: 0.25 !important;
+            bottom: auto !important;
+            transform: translateX(-50%) !important; /* Only center horizontally */
+            width: 240px !important;    /* Slightly larger for top-center visibility */
+            opacity: 0.3 !important;    /* Subtle enough not to distract from Hero text */
             z-index: 1 !important;
           }
 
